@@ -11,7 +11,16 @@ class ArchitectureTest {
         var classes = new ClassFileImporter().withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages("com.hotel");
         noClasses().that().resideInAPackage("..controller..")
-                .should().dependOnClassesThat().resideInAnyPackage("..service..", "..factory..", "..strategy..")
+                .should().dependOnClassesThat().resideInAnyPackage("..service..", "..factory..", "..strategy..", "..repository..")
+                .check(classes);
+    }
+
+    @Test
+    void onlyFacadeUsesReservationRegistry() {
+        var classes = new ClassFileImporter().withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                .importPackages("com.hotel");
+        noClasses().that().resideOutsideOfPackages("..facade..", "..repository..")
+                .should().dependOnClassesThat().resideInAPackage("..repository..")
                 .check(classes);
     }
 
