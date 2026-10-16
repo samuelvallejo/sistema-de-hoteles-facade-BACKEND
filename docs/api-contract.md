@@ -8,6 +8,7 @@ Error: `{ "timestamp": "2030-01-01T00:00:00Z", "status": 400, "code": "VALIDATIO
 
 | Método | Ruta | Entrada | Resultado |
 | --- | --- | --- | --- |
+| GET | / | Sin parámetros | 200, estado del servicio (`status: UP`) |
 | GET | /api/hotel/disponibilidad | query checkInDate, checkOutDate, roomType opcional, season opcional (LOW por defecto) | 200, lista de {room, rate} |
 | POST | /api/hotel/reservar | roomId, checkInDate, checkOutDate, season, guest | 201, reserva; cabecera Location |
 | POST | /api/hotel/servicios/{reservationId} | {serviceType} | 200, reserva actualizada |

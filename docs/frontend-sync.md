@@ -1,10 +1,10 @@
 # Coordinación con el frontend
 
 - Repositorio: https://github.com/samuelvallejo/sistema-de-hoteles-facade-FRONTEND
-- Inspección inicial: 16 de octubre de 2026.
-- Resultado: repositorio vacío, sin commits ni cliente HTTP existente. No existe SHA inicial que registrar.
-- Contrato propuesto e implementado: `docs/api-contract.md` y `docs/openapi.json` de este backend.
-- Se prepararon instrucciones y una skill de integración en una copia local separada del repositorio frontend. No se implementó la interfaz ni se publicó contenido del frontend.
+- Revisión más reciente: 16 de octubre de 2026, rama `main`, commit `8ff474f60b5536617534fe937f88e15a25dadfa0`.
+- Resultado: aplicación React/Vite con cliente HTTP que usa `VITE_API_URL` y las seis rutas del taller documentadas aquí. Los campos de consulta y las rutas coinciden; el cliente no llama al endpoint de estado raíz.
+- Cambio actual: se añadió `GET /` como comprobación de salud del backend. No modifica el contrato consumido por el frontend.
+- El frontend se mantiene en su repositorio independiente; no se modificó su código de aplicación.
 
 Antes de futuras modificaciones del backend:
 

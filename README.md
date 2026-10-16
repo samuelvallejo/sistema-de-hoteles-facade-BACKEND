@@ -6,7 +6,7 @@ Repositorio backend: https://github.com/samuelvallejo/sistema-de-hoteles-facade-
 
 Repositorio frontend: https://github.com/samuelvallejo/sistema-de-hoteles-facade-FRONTEND
 
-Esta entrega implementa el backend. El frontend está pendiente. No se ha desplegado en Railway ni Vercel; las instrucciones de despliegue se incluyen para la siguiente etapa.
+El frontend y el backend están desplegados: [frontend en Vercel](https://sistema-de-hoteles-facade-frontend.vercel.app) y [API en Railway](https://hotel-backend-production-789f.up.railway.app). El dominio raíz del backend muestra el estado del servicio; las operaciones de reservas se encuentran bajo `/api/hotel`.
 
 ## Estructura
 
@@ -73,7 +73,7 @@ chmod +x mvnw
 PORT=8080 CORS_ALLOWED_ORIGINS=http://localhost:5173 ./mvnw spring-boot:run
 ```
 
-La API estará en `http://localhost:8080/api/hotel`. También se puede ejecutar el empaquetado con `java -jar target/hotel-facade-1.0.0.jar`. `.env.example` documenta las variables; Spring Boot no carga un archivo `.env` por sí mismo. Exportar las variables en el shell o configurarlas en el proveedor.
+La comprobación de estado estará en `http://localhost:8080/` y la API en `http://localhost:8080/api/hotel`. También se puede ejecutar el empaquetado con `java -jar target/hotel-facade-1.0.0.jar`. `.env.example` documenta las variables; Spring Boot no carga un archivo `.env` por sí mismo. Exportar las variables en el shell o configurarlas en el proveedor.
 
 Para varios orígenes CORS, separarlos por comas, sin barra final. Se aceptan patrones: por defecto `http://localhost:*` (cualquier puerto local). Por ejemplo: `http://localhost:*,https://hotel.vercel.app`. No se acepta `*` solo.
 

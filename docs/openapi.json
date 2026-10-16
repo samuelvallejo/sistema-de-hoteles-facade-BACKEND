@@ -12,6 +12,27 @@
     }
   ],
   "paths": {
+    "/": {
+      "get": {
+        "operationId": "health",
+        "summary": "Consultar el estado del servicio",
+        "tags": [
+          "Health"
+        ],
+        "responses": {
+          "200": {
+            "description": "El backend está activo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/hotel/reservar": {
       "post": {
         "operationId": "createReservation",
@@ -551,6 +572,24 @@
   },
   "components": {
     "schemas": {
+      "HealthStatus": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "UP"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
       "RoomType": {
         "type": "string",
         "enum": [

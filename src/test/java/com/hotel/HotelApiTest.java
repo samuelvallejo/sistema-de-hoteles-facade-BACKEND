@@ -37,6 +37,14 @@ class HotelApiTest {
     }
 
     @Test
+    void rootPathReportsServiceHealth() throws Exception {
+        mvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("UP"))
+                .andExpect(jsonPath("$.message").value("Sistema de Reservas de Hotel activo."));
+    }
+
+    @Test
     void completeLifecycleProducesExactInvoiceAndReleasesRoom() throws Exception {
         String id = reserve(1, "2030-06-01", "2030-06-04", "HIGH");
         mvc.perform(get("/api/hotel/reserva/" + id)).andExpect(status().isOk())
