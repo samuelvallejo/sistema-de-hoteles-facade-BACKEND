@@ -37,8 +37,15 @@ class HotelApiTest {
     }
 
     @Test
-    void rootPathReportsServiceHealth() throws Exception {
+    void rootPathRedirectsToFrontend() throws Exception {
         mvc.perform(get("/"))
+                .andExpect(status().isFound())
+                .andExpect(header().string("Location", "http://localhost:5173"));
+    }
+
+    @Test
+    void healthPathReportsServiceStatus() throws Exception {
+        mvc.perform(get("/health"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("UP"))
                 .andExpect(jsonPath("$.message").value("Sistema de Reservas de Hotel activo."));

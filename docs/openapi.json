@@ -14,6 +14,29 @@
   "paths": {
     "/": {
       "get": {
+        "operationId": "home",
+        "summary": "Abrir la aplicación del hotel",
+        "tags": [
+          "Hotel"
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirige al frontend configurado mediante FRONTEND_URL.",
+            "headers": {
+              "Location": {
+                "description": "URL del frontend.",
+                "schema": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
         "operationId": "health",
         "summary": "Consultar el estado del servicio",
         "tags": [

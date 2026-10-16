@@ -6,7 +6,7 @@ Repositorio backend: https://github.com/samuelvallejo/sistema-de-hoteles-facade-
 
 Repositorio frontend: https://github.com/samuelvallejo/sistema-de-hoteles-facade-FRONTEND
 
-El frontend y el backend están desplegados: [frontend en Vercel](https://sistema-de-hoteles-facade-frontend.vercel.app) y [API en Railway](https://hotel-backend-production-789f.up.railway.app). El dominio raíz del backend muestra el estado del servicio; las operaciones de reservas se encuentran bajo `/api/hotel`.
+El frontend y el backend están desplegados: [frontend en Vercel](https://sistema-de-hoteles-facade-frontend.vercel.app) y [API en Railway](https://hotel-backend-production-789f.up.railway.app). El dominio raíz redirige al frontend; el estado del backend está en `/health` y las operaciones de reservas bajo `/api/hotel`.
 
 ## Estructura
 
@@ -73,7 +73,7 @@ chmod +x mvnw
 PORT=8080 CORS_ALLOWED_ORIGINS=http://localhost:5173 ./mvnw spring-boot:run
 ```
 
-La comprobación de estado estará en `http://localhost:8080/` y la API en `http://localhost:8080/api/hotel`. También se puede ejecutar el empaquetado con `java -jar target/hotel-facade-1.0.0.jar`. `.env.example` documenta las variables; Spring Boot no carga un archivo `.env` por sí mismo. Exportar las variables en el shell o configurarlas en el proveedor.
+El frontend local se abre en `http://localhost:5173`; el backend redirige allí desde `http://localhost:8080/`. La comprobación de estado está en `http://localhost:8080/health` y la API en `http://localhost:8080/api/hotel`. También se puede ejecutar el empaquetado con `java -jar target/hotel-facade-1.0.0.jar`. `.env.example` documenta las variables; Spring Boot no carga un archivo `.env` por sí mismo. Exportar las variables en el shell o configurarlas en el proveedor.
 
 Para varios orígenes CORS, separarlos por comas, sin barra final. Se aceptan patrones: por defecto `http://localhost:*` (cualquier puerto local). Por ejemplo: `http://localhost:*,https://hotel.vercel.app`. No se acepta `*` solo.
 
