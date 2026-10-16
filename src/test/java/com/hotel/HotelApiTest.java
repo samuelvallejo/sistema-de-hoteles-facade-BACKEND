@@ -150,6 +150,9 @@ class HotelApiTest {
         mvc.perform(options("/api/hotel/reservar").header("Origin", "http://localhost:5173")
                 .header("Access-Control-Request-Method", "POST").header("Access-Control-Request-Headers", "Content-Type"))
                 .andExpect(status().isOk()).andExpect(header().string("Access-Control-Allow-Origin", "http://localhost:5173"));
+        mvc.perform(options("/api/hotel/reservar").header("Origin", "http://localhost:3000")
+                .header("Access-Control-Request-Method", "PUT"))
+                .andExpect(status().isOk()).andExpect(header().string("Access-Control-Allow-Origin", "http://localhost:3000"));
         mvc.perform(options("/api/hotel/reservar").header("Origin", "https://untrusted.example")
                 .header("Access-Control-Request-Method", "POST"))
                 .andExpect(status().isForbidden()).andExpect(header().doesNotExist("Access-Control-Allow-Origin"));
