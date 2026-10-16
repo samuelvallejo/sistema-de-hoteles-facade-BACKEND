@@ -1,0 +1,1033 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Sistema de Reservas de Hotel",
+    "version": "1.0.0",
+    "description": "API académica Facade con estado en memoria. Sin autenticación. Se reinicia al reiniciar el proceso."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Entorno local"
+    }
+  ],
+  "paths": {
+    "/api/hotel/reservar": {
+      "post": {
+        "operationId": "createReservation",
+        "summary": "Crear reserva",
+        "tags": [
+          "Hotel"
+        ],
+        "responses": {
+          "201": {
+            "description": "Operación completada correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationResponse"
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Ruta para consultar la reserva creada.",
+                "schema": {
+                  "type": "string",
+                  "format": "uri-reference"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso inexistente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto de disponibilidad o estado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Tipo de contenido no admitido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReservationRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hotel/disponibilidad": {
+      "get": {
+        "operationId": "availability",
+        "summary": "Consultar disponibilidad y cotización",
+        "tags": [
+          "Hotel"
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación completada correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvailabilityResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso inexistente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto de disponibilidad o estado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Tipo de contenido no admitido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "checkInDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "checkOutDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "roomType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/RoomType"
+            }
+          },
+          {
+            "name": "season",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Season",
+              "default": "LOW"
+            }
+          }
+        ]
+      }
+    },
+    "/api/hotel/servicios/{reservationId}": {
+      "post": {
+        "operationId": "addService",
+        "summary": "Agregar servicio adicional",
+        "tags": [
+          "Hotel"
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación completada correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso inexistente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto de disponibilidad o estado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Tipo de contenido no admitido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServiceRequest"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "reservationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/api/hotel/checkin/{reservationId}": {
+      "put": {
+        "operationId": "performCheckIn",
+        "summary": "Realizar check-in y generar llave digital",
+        "tags": [
+          "Hotel"
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación completada correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso inexistente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto de disponibilidad o estado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Tipo de contenido no admitido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "reservationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/api/hotel/checkout/{reservationId}": {
+      "put": {
+        "operationId": "performCheckOut",
+        "summary": "Realizar check-out y generar factura final",
+        "tags": [
+          "Hotel"
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación completada correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso inexistente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto de disponibilidad o estado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Tipo de contenido no admitido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "reservationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/api/hotel/reserva/{reservationId}": {
+      "get": {
+        "operationId": "getReservation",
+        "summary": "Consultar reserva",
+        "tags": [
+          "Hotel"
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación completada correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso inexistente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto de disponibilidad o estado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Tipo de contenido no admitido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "reservationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RoomType": {
+        "type": "string",
+        "enum": [
+          "SINGLE",
+          "DOUBLE",
+          "SUITE"
+        ]
+      },
+      "Season": {
+        "type": "string",
+        "enum": [
+          "HIGH",
+          "LOW"
+        ]
+      },
+      "ServiceType": {
+        "type": "string",
+        "enum": [
+          "SPA",
+          "BREAKFAST",
+          "TRANSFER"
+        ]
+      },
+      "ReservationStatus": {
+        "type": "string",
+        "enum": [
+          "CONFIRMED",
+          "CHECKED_IN",
+          "CHECKED_OUT"
+        ]
+      },
+      "GuestRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "document": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254
+          },
+          "phone": {
+            "type": "string",
+            "pattern": "^[+0-9() .-]{7,25}$"
+          }
+        },
+        "required": [
+          "name",
+          "document",
+          "email",
+          "phone"
+        ],
+        "additionalProperties": false
+      },
+      "Guest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "document": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254
+          },
+          "phone": {
+            "type": "string",
+            "pattern": "^[+0-9() .-]{7,25}$"
+          }
+        },
+        "required": [
+          "name",
+          "document",
+          "email",
+          "phone"
+        ]
+      },
+      "ReservationRequest": {
+        "type": "object",
+        "properties": {
+          "roomId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "checkInDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "checkOutDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "season": {
+            "$ref": "#/components/schemas/Season"
+          },
+          "guest": {
+            "$ref": "#/components/schemas/GuestRequest"
+          }
+        },
+        "required": [
+          "roomId",
+          "checkInDate",
+          "checkOutDate",
+          "season",
+          "guest"
+        ],
+        "additionalProperties": false
+      },
+      "ServiceRequest": {
+        "type": "object",
+        "properties": {
+          "serviceType": {
+            "$ref": "#/components/schemas/ServiceType"
+          }
+        },
+        "required": [
+          "serviceType"
+        ],
+        "additionalProperties": false
+      },
+      "Room": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "number": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/RoomType"
+          },
+          "baseRate": {
+            "type": "number",
+            "description": "Importe en USD con dos decimales.",
+            "multipleOf": 0.01
+          }
+        },
+        "required": [
+          "id",
+          "number",
+          "type",
+          "baseRate"
+        ]
+      },
+      "Rate": {
+        "type": "object",
+        "properties": {
+          "nights": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "season": {
+            "$ref": "#/components/schemas/Season"
+          },
+          "baseNightlyRate": {
+            "type": "number",
+            "description": "Importe en USD con dos decimales.",
+            "multipleOf": 0.01
+          },
+          "nightlyRate": {
+            "type": "number",
+            "description": "Importe en USD con dos decimales.",
+            "multipleOf": 0.01
+          },
+          "baseTotal": {
+            "type": "number",
+            "description": "Importe en USD con dos decimales.",
+            "multipleOf": 0.01
+          },
+          "seasonSurcharge": {
+            "type": "number",
+            "description": "Importe en USD con dos decimales.",
+            "multipleOf": 0.01
+          },
+          "total": {
+            "type": "number",
+            "description": "Importe en USD con dos decimales.",
+            "multipleOf": 0.01
+          }
+        },
+        "required": [
+          "nights",
+          "season",
+          "baseNightlyRate",
+          "nightlyRate",
+          "baseTotal",
+          "seasonSurcharge",
+          "total"
+        ]
+      },
+      "AdditionalService": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ServiceType"
+          },
+          "description": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "unitPrice": {
+            "type": "number",
+            "description": "Importe en USD con dos decimales.",
+            "multipleOf": 0.01
+          },
+          "total": {
+            "type": "number",
+            "description": "Importe en USD con dos decimales.",
+            "multipleOf": 0.01
+          }
+        },
+        "required": [
+          "type",
+          "description",
+          "quantity",
+          "unitPrice",
+          "total"
+        ]
+      },
+      "InvoiceLine": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "unitPrice": {
+            "type": "number",
+            "description": "Importe en USD con dos decimales.",
+            "multipleOf": 0.01
+          },
+          "total": {
+            "type": "number",
+            "description": "Importe en USD con dos decimales.",
+            "multipleOf": 0.01
+          }
+        },
+        "required": [
+          "description",
+          "quantity",
+          "unitPrice",
+          "total"
+        ]
+      },
+      "Invoice": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reservationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "issuedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD"
+            ]
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceLine"
+            }
+          },
+          "subtotal": {
+            "type": "number",
+            "description": "Importe en USD con dos decimales.",
+            "multipleOf": 0.01
+          },
+          "total": {
+            "type": "number",
+            "description": "Importe en USD con dos decimales.",
+            "multipleOf": 0.01
+          }
+        },
+        "required": [
+          "id",
+          "reservationId",
+          "issuedAt",
+          "currency",
+          "lines",
+          "subtotal",
+          "total"
+        ]
+      },
+      "Availability": {
+        "type": "object",
+        "properties": {
+          "room": {
+            "$ref": "#/components/schemas/Room"
+          },
+          "rate": {
+            "$ref": "#/components/schemas/Rate"
+          }
+        },
+        "required": [
+          "room",
+          "rate"
+        ]
+      },
+      "Reservation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "guest": {
+            "$ref": "#/components/schemas/Guest"
+          },
+          "room": {
+            "$ref": "#/components/schemas/Room"
+          },
+          "checkInDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "checkOutDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "rate": {
+            "$ref": "#/components/schemas/Rate"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ReservationStatus"
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdditionalService"
+            }
+          },
+          "servicesTotal": {
+            "type": "number",
+            "description": "Importe en USD con dos decimales.",
+            "multipleOf": 0.01
+          },
+          "total": {
+            "type": "number",
+            "description": "Importe en USD con dos decimales.",
+            "multipleOf": 0.01
+          },
+          "digitalKey": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "invoice": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Invoice"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "guest",
+          "room",
+          "checkInDate",
+          "checkOutDate",
+          "rate",
+          "status",
+          "services",
+          "servicesTotal",
+          "total",
+          "digitalKey",
+          "invoice"
+        ]
+      },
+      "ApiError": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "timestamp",
+          "status",
+          "code",
+          "message",
+          "path",
+          "errors"
+        ]
+      },
+      "ReservationResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Reservation"
+          }
+        },
+        "required": [
+          "message",
+          "data"
+        ]
+      },
+      "AvailabilityResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Availability"
+            }
+          }
+        },
+        "required": [
+          "message",
+          "data"
+        ]
+      }
+    }
+  }
+}
