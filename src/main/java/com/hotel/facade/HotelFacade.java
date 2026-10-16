@@ -4,6 +4,7 @@ import com.hotel.dto.*;
 import com.hotel.dto.HotelResponses.*;
 import com.hotel.exception.HotelException;
 import com.hotel.model.*;
+import com.hotel.repository.ReservationRegistry;
 import com.hotel.service.*;
 import java.time.LocalDate;
 import java.util.*;
@@ -17,7 +18,7 @@ public class HotelFacade {
     private final AdditionalServiceService additionalServices;
     private final BillingService billing;
     private final AccessService access;
-    private final Map<UUID, Reservation> reservations = new HashMap<>();
+    private final ReservationRegistry reservations = ReservationRegistry.getInstance();
 
     public HotelFacade(RoomService rooms, RateService rates, AdditionalServiceService additionalServices,
                        BillingService billing, AccessService access) {
@@ -37,7 +38,7 @@ public class HotelFacade {
                 guest.email().trim(), guest.phone().trim()), room, request.checkInDate(), request.checkOutDate(),
                 rate, ReservationStatus.CONFIRMED, List.of(), null, null);
         rooms.reserve(id, room.id(), request.checkInDate(), request.checkOutDate());
-        reservations.put(id, reservation);
+        reservations.save(reservation);
         return HotelResponses.reservation(reservation);
     }
 
@@ -57,7 +58,7 @@ public class HotelFacade {
             throw new HotelException(HttpStatus.CONFLICT, "SERVICE_ALREADY_ADDED", "Este servicio ya está incluido en la reserva.");
         }
         Reservation updated = reservation.withService(additionalServices.addService(type, reservation.rate().nights()));
-        reservations.put(id, updated);
+        reservations.save(updated);
         return HotelResponses.reservation(updated);
     }
 
@@ -65,7 +66,7 @@ public class HotelFacade {
         Reservation reservation = find(id);
         requireState(reservation, ReservationStatus.CONFIRMED, "Solo se puede realizar check-in a una reserva confirmada.");
         Reservation updated = reservation.checkedIn(access.generateKey(id));
-        reservations.put(id, updated);
+        reservations.save(updated);
         return HotelResponses.reservation(updated);
     }
 
@@ -76,14 +77,13 @@ public class HotelFacade {
         Reservation updated = reservation.checkedOut(invoice);
         access.revokeKey(id);
         rooms.release(id);
-        reservations.put(id, updated);
+        reservations.save(updated);
         return HotelResponses.reservation(updated);
     }
 
     private Reservation find(UUID id) {
-        Reservation reservation = reservations.get(id);
-        if (reservation == null) throw new HotelException(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND", "La reserva no existe.");
-        return reservation;
+        return reservations.find(id).orElseThrow(() ->
+                new HotelException(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND", "La reserva no existe."));
     }
 
     private void requireState(Reservation reservation, ReservationStatus expected, String message) {
