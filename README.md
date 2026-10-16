@@ -16,6 +16,7 @@ Esta entrega implementa el backend. El frontend está pendiente. No se ha desple
   hotel-api-sync/SKILL.md
 .mvn/wrapper/maven-wrapper.properties
 docs/
+  PLAN_BACKEND.md
   api-contract.md
   openapi.json
   requests.http
@@ -31,12 +32,14 @@ src/main/java/com/hotel/
   facade/          HotelFacade
   factory/         RoomFactory, AdditionalServiceFactory
   model/           Immutable domain records and enums, Invoice.Builder
+  repository/      ReservationRegistry (Singleton)
   service/         Five subsystems and StayRules
   strategy/        PricingStrategy, HighSeasonPricingStrategy, LowSeasonPricingStrategy
 src/main/resources/application.properties
 src/test/AGENTS.md
 src/test/java/com/hotel/
   HotelApiTest.java
+  HotelFacadeTest.java
   ConcurrencyTest.java
   ArchitectureTest.java
   RateServiceTest.java
@@ -72,7 +75,7 @@ PORT=8080 CORS_ALLOWED_ORIGINS=http://localhost:5173 ./mvnw spring-boot:run
 
 La API estará en `http://localhost:8080/api/hotel`. También se puede ejecutar el empaquetado con `java -jar target/hotel-facade-1.0.0.jar`. `.env.example` documenta las variables; Spring Boot no carga un archivo `.env` por sí mismo. Exportar las variables en el shell o configurarlas en el proveedor.
 
-Para varios orígenes CORS, separar orígenes exactos por comas, sin barra final. Por ejemplo: `http://localhost:5173,https://hotel.example.com`. No se acepta `*`.
+Para varios orígenes CORS, separarlos por comas, sin barra final. Se aceptan patrones: por defecto `http://localhost:*` (cualquier puerto local). Por ejemplo: `http://localhost:*,https://hotel.vercel.app`. No se acepta `*` solo.
 
 Docker, si se tiene instalado:
 
@@ -145,14 +148,15 @@ RoomFactory PricingStrategy AdditionalServiceFactory Invoice.Builder
 - **Strategy:** HighSeasonPricingStrategy y LowSeasonPricingStrategy calculan la tarifa nocturna, seleccionadas por RateService.
 - **Factory:** RoomFactory crea el inventario de 6 sencillas, 6 dobles y 3 suites; AdditionalServiceFactory construye extras con precios y cantidades.
 - **Builder:** Invoice.Builder construye las líneas de alojamiento, recargo y extras, y calcula el subtotal y total.
+- **Singleton:** ReservationRegistry es el único registro de reservas en memoria (`ConcurrentHashMap`). Tiene constructor privado y `getInstance()` con el idiom *holder*. Solo HotelFacade lo usa; ArchUnit lo verifica.
 
-Las operaciones de la fachada se sincronizan para proteger las transacciones compuestas en memoria. Se usan snapshots inmutables y DTOs separados. La documentación de [decisiones del dominio](docs/requirements.md) explica temporadas, moneda, duplicados, fechas y alcance de la simulación.
+Las operaciones de la fachada se sincronizan para proteger las transacciones compuestas en memoria. Ver también el [plan del backend](docs/PLAN_BACKEND.md). Se usan snapshots inmutables y DTOs separados. La documentación de [decisiones del dominio](docs/requirements.md) explica temporadas, moneda, duplicados, fechas y alcance de la simulación.
 
 ## Pruebas
 
 `./mvnw -B verify` o `.\mvnw.cmd -B verify` ejecuta pruebas del flujo REST completo, validaciones y errores en español, filtros, disponibilidad y solapamientos, estados, llaves, factura, servicios, CORS, tarifas de los tres tipos en ambas temporadas, concurrencia y límites arquitectónicos con ArchUnit. Los reportes están en `target/surefire-reports`. No requieren servicios externos.
 
-Resultado de la entrega: 16 pruebas aprobadas y los seis endpoints comprobados con el JAR en ejecución. Detalles y límites en [registro de validación](docs/validation.md).
+Resultado de la entrega: 19 pruebas aprobadas y los seis endpoints comprobados con el JAR en ejecución. Detalles y límites en [registro de validación](docs/validation.md).
 
 ## Coordinación con el frontend y agentes
 
